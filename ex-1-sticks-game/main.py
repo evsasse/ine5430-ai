@@ -41,7 +41,7 @@ class Player:
 
 def __main__():
     players = {}
-    players_names = ['P1', 'P2', 'P3', 'P4', 'P5']
+    players_names = ['João', 'Maria', 'José', 'Marta', 'Juca']
     for player_name in players_names:
         players[player_name] = Player(player_name, players_names)
 
@@ -51,13 +51,13 @@ def __main__():
     while winner is None:
     # if True:
         print('=== Starting round #{} === '.format(round_number))
-        print(' = Player {} is going to be the first to guess'.format(players_names[0]))
+        print('|- Player {} is going to be the first to guess'.format(players_names[0]))
 
         # cant hold 0 on first round
         at_least_per_player = 1 if round_number == 0 else 0
 
         round_holds = [player.hold(at_least_per_player) for player in players.values()]
-        print(' = Shh! = Players are holding: {}, for a total of {}'.format(round_holds, sum(round_holds)))
+        print('|= Shh! = Players are holding: {}, for a total of {}'.format(round_holds, sum(round_holds)))
 
         round_guesses = []
         round_winner = None
@@ -68,21 +68,21 @@ def __main__():
             if player_guess == sum(round_holds):
                 round_winner = player
 
-        print(' = Players have guessed: {}'.format(round_guesses))
+        print('|- Players have guessed: {}'.format(round_guesses))
 
         rotate_players_by = 1
         if round_winner is not None:
             if round_winner.can_win():
                 winner = round_winner
-                print(' = Player {} won the round guessing {}, and won the game'.format(round_winner.name, sum(round_holds)))
+                print('|- Player {} won the round guessing {}, and won the game'.format(round_winner.name, sum(round_holds)))
                 print('=== GAME ENDED ===')
             else:
                 for player in players.values(): player.update_winner_sticks(round_winner.name)
-                print(' = Player {} won the round guessing {}, and has one fewer stick'.format(round_winner.name, sum(round_holds)))
-                print(' = Shh! = Player {} has {} sticks left'.format(round_winner.name, round_winner.sticks))
+                print('|- Player {} won the round guessing {}, and has one fewer stick'.format(round_winner.name, sum(round_holds)))
+                print('|= Shh! = Player {} has {} sticks left'.format(round_winner.name, round_winner.sticks))
                 rotate_players_by = players_names.index(round_winner.name)
         else:
-            print(' = No players have guessed correctly this round :(')
+            print('|- No players have guessed correctly this round :(')
 
         # rotates order to be guessed by one, or to the round_winner to be first
         players_names = players_names[rotate_players_by:]+players_names[:rotate_players_by]
