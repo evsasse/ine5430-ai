@@ -40,8 +40,7 @@ class Player:
         shuffle(unused_guesses)
 
         if len(unused_guesses) == 0:
-            desperate_guess = max(other_players_guesses.values()) + 1
-            # desperate_guess = max(self.holding, *other_players_guesses.values()) + 1
+            desperate_guess = max(self.holding, *other_players_guesses.values()) + 1
             print('|= Shh! = All guesses Player {} had are already in use, it is desperately guessing {}'.format(self.name, desperate_guess))
             return desperate_guess
         else:
