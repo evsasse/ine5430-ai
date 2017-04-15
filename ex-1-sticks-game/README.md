@@ -1,5 +1,7 @@
 # Trabalho 1 - Jogo de palitos
 
+Aluno: Evandro Sasse - 13100743
+
 ## Andamento do jogo
 
 - O jogo é dividido em rodadas.
@@ -42,7 +44,7 @@
     - se há um número mínimo de palitos que cada jogador precisa jogar na rodada,
     por exemplo na primeira é necessário segurar pelo menos 1 palito;
     
-    - quais foram apostas anteriores dessa mesma rodada;
+    - quais foram as apostas anteriores dessa mesma rodada;
     
     - quantas vezes cada outro jogador venceu alguma rodada anterior,
     portanto quantos palitos cada outro jogador possui.
@@ -58,13 +60,14 @@
     
 2. As apostas já feitas são comparadas à quantidade de palitos do apostador respectivo:
     
-    - como não há senso de blefe entre os jogadores, se um jogador aposta um número menor que sua quantidade de palitos
+    - como **não há senso de blefe** entre os jogadores, se um jogador aposta um número menor que sua quantidade de palitos
     ele certamente está segurando aquela quantidade ou menor.
     
     - o mínimo entre a aposta de um jogador e a sua quantidade de palitos é calculado, e será tomada como a quantidade
     máxima que aquele jogador apostou.
     
-   Por exemplo, um jogador que possui 3 palitos apostou a quantidade 2, esse jogador certamente está segurando 2 palitos ou menos.
+   Por exemplo, um jogador que possui 3 palitos e apostou a quantidade 2,
+   esse jogador certamente está segurando 2 palitos ou menos, apesar de possuir 3.
    
 3. É decidido o número máximo de palitos que foram segurados na rodada:
 
@@ -84,4 +87,4 @@
     
    Por exemplo, o mínimo calculado é 6 e o máximo 9, e 2 outros jogadores já apostaram os números 6 e 8;
    é feita uma decisão aleatória entre 7 e 9. Caso 4 outros jogadores já tenham apostado os números 6, 7, 8 e 9;
-   seria feita uma decisão desesperada pelo número 10, que é impossível de ser atingido.
+   seria feita uma decisão desesperada pelo número 10, que certamente está errado.
