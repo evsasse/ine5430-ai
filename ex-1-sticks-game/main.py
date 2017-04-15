@@ -25,14 +25,13 @@ class Player:
 
     def __guess(self, at_least_per_player):
         at_least = self.holding + len(self.other_players_sticks) * at_least_per_player
-        # print("= Player '{}' would guess at least {}, because {}".format(self.name, at_least, [self.holding, len(self.other_players_sticks) * at_least_per_player]))
-        return randint(at_least, sum(self.other_players_sticks.values()))
+        at_max = sum(self.other_players_sticks.values()) + self.holding
+        return randint(at_least, at_max)
 
-    def guess(self, other_guesses, at_least_per_player):
+    def guess(self, other_players_guesses, at_least_per_player):
         to_guess = self.__guess(at_least_per_player)
-        while to_guess in other_guesses:
+        while to_guess in other_players_guesses:
             to_guess = self.__guess(at_least_per_player)
-        # print("= Player '{}' is guessing {}, because {}".format(self.name, to_guess, [other_guesses, at_least_per_player]))
         return to_guess
 
     def hold(self, at_least):
@@ -49,7 +48,6 @@ def __main__():
     round_number = 0
 
     while winner is None:
-    # if True:
         print('=== Starting round #{} === '.format(round_number))
         print('|- Player {} is going to be the first to guess'.format(players_names[0]))
 
