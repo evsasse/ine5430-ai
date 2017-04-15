@@ -13,6 +13,7 @@ Aluno: Evandro Sasse - 13100743
 ## Como funciona uma rodada
   
 1. Uma rodada começa com cada jogador segurando, secretamente, um número de palitos.
+   Cada jogador escolhe um número aleatório dentro de quantos palitos ele possui, para segurar.
    Caso seja a primeira rodada, cada jogador segura pelo menos 1 palito.
    Os jogadores utilizarão de sua própria quantidade segurada, e o número mínimo, para tomar decisões de aposta nessa rodada.
    
@@ -28,12 +29,6 @@ Aluno: Evandro Sasse - 13100743
    
    c. Caso ninguém vença a rodada, a roda de apostas é mudada por uma posição.
    O jogador que apostou por segundo nessa rodada será o primeiro a apostar na próxima.
-   
- 
-
-## Como um jogador escolhe quanto segurar em uma rodada:
-
-1. Uma simples escolha aleatória de 0 ao número de palitos disponível ao jogador.
 
 ## Como um jogador escolhe quanto apostar em uma rodada:
 
