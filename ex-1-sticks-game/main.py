@@ -1,4 +1,4 @@
-from random import randint
+from random import randint, shuffle
 
 MIN_PLAYERS = 2
 MAX_PLAYERS = 5
@@ -23,16 +23,29 @@ class Player:
     def can_win(self):
         return self.sticks == 1
 
-    def __guess(self, at_least_per_player):
-        at_least = self.holding + len(self.other_players_sticks) * at_least_per_player
-        at_max = sum(self.other_players_sticks.values()) + self.holding
-        return randint(at_least, at_max)
-
     def guess(self, other_players_guesses, at_least_per_player):
-        to_guess = self.__guess(at_least_per_player)
-        while to_guess in other_players_guesses:
-            to_guess = self.__guess(at_least_per_player)
-        return to_guess
+        at_least = self.holding + len(self.other_players_sticks) * at_least_per_player
+
+        max_per_other_player = {}
+        for player in self.other_players_sticks:
+            if player in other_players_guesses:
+                max_per_other_player[player] = min(self.other_players_sticks[player], other_players_guesses[player])
+            else:
+                max_per_other_player[player] = self.other_players_sticks[player]
+
+        at_max = sum(max_per_other_player.values()) + self.holding
+
+        guess_possibilities = list(range(at_least, at_max + 1))
+        unused_guesses = [guess for guess in guess_possibilities if guess not in other_players_guesses.values()]
+        shuffle(unused_guesses)
+
+        if len(unused_guesses) == 0:
+            desperate_guess = max(other_players_guesses.values()) + 1
+            # desperate_guess = max(self.holding, *other_players_guesses.values()) + 1
+            print('|= Shh! = All guesses Player {} had are already in use, it is desperately guessing {}'.format(self.name, desperate_guess))
+            return desperate_guess
+        else:
+            return unused_guesses[0]
 
     def hold(self, at_least):
         self.holding = randint(at_least, self.sticks)
@@ -54,16 +67,19 @@ def __main__():
         # cant hold 0 on first round
         at_least_per_player = 1 if round_number == 0 else 0
 
-        round_holds = [player.hold(at_least_per_player) for player in players.values()]
-        print('|= Shh! = Players are holding: {}, for a total of {}'.format(round_holds, sum(round_holds)))
+        round_holds = {}
+        for player_name in players_names:
+            player = players[player_name]
+            round_holds[player_name] = player.hold(at_least_per_player)
+        print('|= Shh! = Players are holding: {}, for a total of {}'.format(round_holds, sum(round_holds.values())))
 
-        round_guesses = []
+        round_guesses = {}
         round_winner = None
         for player_name in players_names:
             player = players[player_name]
             player_guess = player.guess(round_guesses, at_least_per_player)
-            round_guesses.append(player_guess)
-            if player_guess == sum(round_holds):
+            round_guesses[player_name] = player_guess
+            if player_guess == sum(round_holds.values()):
                 round_winner = player
 
         print('|- Players have guessed: {}'.format(round_guesses))
@@ -72,11 +88,11 @@ def __main__():
         if round_winner is not None:
             if round_winner.can_win():
                 winner = round_winner
-                print('|- Player {} won the round guessing {}, and won the game'.format(round_winner.name, sum(round_holds)))
+                print('|- Player {} won the round guessing {}, and won the game'.format(round_winner.name, sum(round_holds.values())))
                 print('=== GAME ENDED ===')
             else:
                 for player in players.values(): player.update_winner_sticks(round_winner.name)
-                print('|- Player {} won the round guessing {}, and has one fewer stick'.format(round_winner.name, sum(round_holds)))
+                print('|- Player {} won the round guessing {}, and has one fewer stick'.format(round_winner.name, sum(round_holds.values())))
                 print('|= Shh! = Player {} has {} sticks left'.format(round_winner.name, round_winner.sticks))
                 rotate_players_by = players_names.index(round_winner.name)
         else:
