@@ -7,13 +7,29 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.StringTokenizer;
+
+import net.sourceforge.jFuzzyLogic.FIS;
+import net.sourceforge.jFuzzyLogic.plot.JFuzzyChart;
+import java.lang.Thread;
  
 public class RemoteDriver {
 	
 	static int port = 4321;
 	static String host = "localhost";
 	
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, InterruptedException {
+    	
+    	String fileName = "driver.fcl";
+        FIS fis = FIS.load(fileName,true);
+
+        // Error while loading?
+        if( fis == null ) { 
+            System.err.println("Can't load file: '" + fileName + "'");
+            return;
+        }
+        
+        // Prints each graph of the functions in the file
+//        JFuzzyChart.get().chart(fis);
         	    	
         Socket kkSocket = null;
         PrintWriter out = null;
@@ -50,17 +66,21 @@ public class RemoteDriver {
         	/////////////////////////////////////////////////////////////////////////////////////
         	// TODO sua lógica fuzzy vai aqui use os valores de x,y e angle obtidos. x e y estao em [0,1] e angulo [0,360)
         	
+        	fis.setVariable("x", x);
+            fis.setVariable("y", y);
+            fis.setVariable("angle", angle);
+
+            fis.evaluate();
         	
+        	double respostaDaSuaLogica = fis.getVariable("change").getLatestDefuzzifiedValue();
         	
-			
-        	double teste = Double.valueOf(stdIn.readLine());
+        	System.out.println("change: " + respostaDaSuaLogica);
         	
-        	
-        	
-        	
-        	
-        	double respostaDaSuaLogica = teste; // atribuir um valor entre -1 e 1 para virar o volante pra esquerda ou direita.
-        	
+        	Thread.sleep(1000);
+
+//        	double teste = Double.valueOf(stdIn.readLine());
+//        	
+//        	double respostaDaSuaLogica = teste; // atribuir um valor entre -1 e 1 para virar o volante pra esquerda ou direita.
         	
         	///////////////////////////////////////////////////////////////////////////////// Acaba sua modificacao aqui
         	// envio da acao do volante
