@@ -11,31 +11,62 @@ VAR_OUTPUT
 END_VAR
 
 FUZZIFY x
-	TERM tooleft := (0, 1) (0.3, 0);
-	TERM left := (0, 0) (0.4, 1) (0.5, 0);
+	TERM left := (0, 1) (0.3, 0.1) (0.5, 0);
 	TERM center := (0.25, 0) (0.5, 1) (0.75, 0);
-	TERM right := (0.5, 0) (0.6, 1) (1, 0);
-	TERM tooright := (0.7, 0) (1, 1);
+	TERM right := (0.5, 0) (0.7, 0.1) (1, 1);
+
+//	TERM tooleft := (0, 1) (0.3, 0);
+//	TERM deadcenter := (0.4, 0) (0.5, 1) (0.6, 0);
+//	TERM tooright := (0.7, 0) (1, 1);
 END_FUZZIFY
 
 FUZZIFY y
-	TERM up := (0, 1) (0.6, 0);
-	TERM down := (0.4, 0) (1, 1);
+	TERM up := (0, 1) (0.5, 0);
+	TERM mid := (0.25, 0) (0.5, 1) (0.75, 0);
+	TERM down := (0.5, 0) (1, 1);
 END_FUZZIFY
 
 FUZZIFY angle
-	TERM left := (0, 1) (90, 0) (270, 0) (360, 1);
-	TERM centerleft := (60, 0) (90, 1) (100, 0);
-	TERM aligned := (75, 0) (90, 1) (105, 0);
-	TERM centerright := (80, 0) (90, 1) (120,0);
-	TERM right := (90, 0) (180, 1) (270,0);
-	TERM backwards := (180, 0) (270, 1) (360, 0);
+// upleft   ; upcenter   ; upright
+// midleft  ;            ; midright
+// downleft ; downcenter ; downright
+
+	TERM upleft := (270, 0) (315, 1) (360, 0);
+	TERM midleft := (0, 1) (45, 0) (315, 0) (360, 1);
+	TERM downleft := (0, 0) (45, 1) (90, 0);
+
+	TERM downcenter := (45, 0) (90, 1) (135, 0);
+
+	TERM downright := (90, 0) (135, 1) (180, 0);
+	TERM midright := (135, 0) (180, 1) (225, 0);
+	TERM upright := (180, 0) (225, 1) (270, 0);
+
+	TERM upcenter := (225, 0) (270, 1) (315, 0);
+
+//	TERM centerleft := (60, 0) (90, 1) (100, 0);
+//	TERM aligned := (75, 0) (90, 1) (105, 0);
+// TERM down := (0, 0) (90, 1) (180, 0);
+//	TERM centerright := (80, 0) (90, 1) (120,0);
+//	TERM right := (90, 0) (180, 1) (270,0);
+//	TERM backwards := (180, 0) (270, 1) (360, 0);
 END_FUZZIFY
 
 DEFUZZIFY change
-	TERM goleft := (-1, 1) (-0.8, 0.3) (0, 0);
-	TERM keep := (-0.5, 0) (0, 0) (0.5, 0);
-	TERM goright := (0, 0) (0.8, 0.3) (1, 1);
+// left is anticlockwise
+// right is clockwise
+	TERM clockwise := (-1, 1) (0, 0);
+	TERM strongclockwise := (-1, 1) (-0.1, 1) (0, 0);
+	TERM anticlockwise := (0, 0) (1, 1);
+	TERM stronganticlockwise := (0, 0) (0.1, 1) (1, 1);
+//	TERM left := (-1, 1) (0, 0);
+//	TERM goleft := (-1, 1) (-0.8, 0.3) (0, 0);
+//	TERM right := (0, 0) (1, 1);
+//	TERM goright := (0, 0) (0.8, 0.3) (1, 1);
+//	TERM sharpleft := (-1, 1) (0, 0.3);
+//	TERM smoothleft := (-1, 0.5) (0, 0);
+	TERM keep := (-0.5, 0) (0, 1) (0.5, 0);
+//	TERM smoothright := (0, 0) (1, 0.5);
+//	TERM sharpright := (0, 0.3) (1, 1);
 	METHOD : COG;		// Use 'Center Of Gravity' defuzzification method
 	DEFAULT := 0;		// Default value is 0 (if no rule activates defuzzifier)
 END_DEFUZZIFY
@@ -45,17 +76,153 @@ RULEBLOCK No1
 	ACT : MIN;			// Use 'min' activation method
 	ACCU : MAX;			// Use 'max' accumulation method
 
-	RULE 11 : IF x IS tooleft THEN change IS goright;
-	RULE 12 : IF x IS left AND angle is right THEN change IS keep;
+// 1 ; 2 ; 3
+// 4 ; 5 ; 6
+// 7 ; 8 ; 9
+
+// 1? up left
+
+RULE 11 : IF y IS up AND x IS left AND angle IS upleft THEN change IS anticlockwise;
+RULE 14 : IF y IS up AND x IS left AND angle IS midleft THEN change IS anticlockwise;
+RULE 17 : IF y IS up AND x IS left AND angle IS downleft THEN change IS anticlockwise;
+RULE 18 : IF y IS up AND x IS left AND angle IS downcenter THEN change IS anticlockwise;
+
+RULE 19 : IF y IS up AND x IS left AND angle IS downright THEN change IS keep;
+
+RULE 16 : IF y IS up AND x IS left AND angle IS midright THEN change IS clockwise;
+RULE 13 : IF y IS up AND x IS left AND angle IS upright THEN change IS clockwise;
+
+RULE 12 : IF y IS up AND x IS left AND angle IS upcenter THEN change IS anticlockwise;
+
+// 2? up center
+
+RULE 21 : IF y IS up AND x IS center AND angle IS upleft THEN change IS anticlockwise;
+RULE 24 : IF y IS up AND x IS center AND angle IS midleft THEN change IS anticlockwise;
+RULE 27 : IF y IS up AND x IS center AND angle IS downleft THEN change IS stronganticlockwise;
+
+RULE 28 : IF y IS up AND x IS center AND angle IS downcenter THEN change IS keep;
+
+RULE 29 : IF y IS up AND x IS center AND angle IS downright THEN change IS strongclockwise;
+RULE 26 : IF y IS up AND x IS center AND angle IS midright THEN change IS clockwise;
+RULE 23 : IF y IS up AND x IS center AND angle IS upright THEN change IS clockwise;
+
+RULE 22 : IF y IS up AND x IS center AND angle IS upcenter THEN change IS anticlockwise;
+
+// 3? up right
+
+RULE 31 : IF y IS up AND x IS right AND angle IS upleft THEN change IS anticlockwise;
+RULE 34 : IF y IS up AND x IS right AND angle IS midleft THEN change IS anticlockwise;
+
+RULE 37 : IF y IS up AND x IS right AND angle IS downleft THEN change IS keep;
+
+RULE 38 : IF y IS up AND x IS right AND angle IS downcenter THEN change IS clockwise;
+RULE 39 : IF y IS up AND x IS right AND angle IS downright THEN change IS clockwise;
+RULE 36 : IF y IS up AND x IS right AND angle IS midright THEN change IS clockwise;
+RULE 33 : IF y IS up AND x IS right AND angle IS upright THEN change IS clockwise;
+RULE 32 : IF y IS up AND x IS right AND angle IS upcenter THEN change IS clockwise;
+
+// 4? mid left
+
+RULE 41 : IF y IS mid AND x IS left AND angle IS upleft THEN change IS clockwise;
+RULE 44 : IF y IS mid AND x IS left AND angle IS midleft THEN change IS clockwise;
+
+RULE 47 : IF y IS mid AND x IS left AND angle IS downleft THEN change IS anticlockwise;
+RULE 48 : IF y IS mid AND x IS left AND angle IS downcenter THEN change IS anticlockwise;
+
+RULE 49 : IF y IS mid AND x IS left AND angle IS downright THEN change IS keep;
+
+RULE 46 : IF y IS mid AND x IS left AND angle IS midright THEN change IS clockwise;
+RULE 43 : IF y IS mid AND x IS left AND angle IS upright THEN change IS clockwise;
+RULE 42 : IF y IS mid AND x IS left AND angle IS upcenter THEN change IS clockwise;
+
+// 5? mid center
+
+RULE 51 : IF y IS mid AND x IS center AND angle IS upleft THEN change IS anticlockwise;
+RULE 54 : IF y IS mid AND x IS center AND angle IS midleft THEN change IS anticlockwise;
+RULE 57 : IF y IS mid AND x IS center AND angle IS downleft THEN change IS stronganticlockwise;
+
+RULE 58 : IF y IS mid AND x IS center AND angle IS downcenter THEN change IS keep;
+
+RULE 59 : IF y IS mid AND x IS center AND angle IS downright THEN change IS strongclockwise;
+RULE 56 : IF y IS mid AND x IS center AND angle IS midright THEN change IS clockwise;
+RULE 53 : IF y IS mid AND x IS center AND angle IS upright THEN change IS clockwise;
+
+RULE 52 : IF y IS mid AND x IS center AND angle IS upcenter THEN change IS anticlockwise;
+
+// 6? mid right
+
+RULE 61 : IF y IS mid AND x IS right AND angle IS upleft THEN change IS anticlockwise;
+RULE 64 : IF y IS mid AND x IS right AND angle IS midleft THEN change IS anticlockwise;
+
+RULE 67 : IF y IS mid AND x IS right AND angle IS downleft THEN change IS keep;
+
+RULE 68 : IF y IS mid AND x IS right AND angle IS downcenter THEN change IS clockwise;
+RULE 69 : IF y IS mid AND x IS right AND angle IS downright THEN change IS clockwise;
+
+RULE 66 : IF y IS mid AND x IS right AND angle IS midright THEN change IS anticlockwise;
+RULE 63 : IF y IS mid AND x IS right AND angle IS upright THEN change IS anticlockwise;
+RULE 62 : IF y IS mid AND x IS right AND angle IS upcenter THEN change IS anticlockwise;
+
+// 7? down left
+
+RULE 71 : IF y IS down AND x IS left AND angle IS upleft THEN change IS clockwise;
+RULE 71 : IF y IS down AND x IS left AND angle IS midleft THEN change IS clockwise;
+
+RULE 71 : IF y IS down AND x IS left AND angle IS downleft THEN change IS anticlockwise;
+RULE 71 : IF y IS down AND x IS left AND angle IS downcenter THEN change IS anticlockwise;
+RULE 71 : IF y IS down AND x IS left AND angle IS downright THEN change IS anticlockwise;
+RULE 71 : IF y IS down AND x IS left AND angle IS midright THEN change IS anticlockwise;
+
+RULE 71 : IF y IS down AND x IS left AND angle IS upright THEN change IS keep;
+
+RULE 71 : IF y IS down AND x IS left AND angle IS upcenter THEN change IS clockwise;
+
+// 8? down center
+
+RULE 81 : IF y IS down AND x IS center AND angle IS upleft THEN change IS keep;
+
+RULE 84 : IF y IS down AND x IS center AND angle IS midleft THEN change IS clockwise;
+
+RULE 87 : IF y IS down AND x IS center AND angle IS downleft THEN change IS stronganticlockwise;
+
+RULE 88 : IF y IS down AND x IS center AND angle IS downcenter THEN change IS keep;
+
+RULE 89 : IF y IS down AND x IS center AND angle IS downright THEN change IS strongclockwise;
+
+RULE 86 : IF y IS down AND x IS center AND angle IS midright THEN change IS anticlockwise;
+
+RULE 83 : IF y IS down AND x IS center AND angle IS upright THEN change IS keep;
+RULE 82 : IF y IS down AND x IS center AND angle IS upcenter THEN change IS keep;
+
+// 9? down right
+
+RULE 91 : IF y IS down AND x IS right AND angle IS upleft THEN change IS keep;
+
+RULE 94 : IF y IS down AND x IS right AND angle IS midleft THEN change IS clockwise;
+RULE 97 : IF y IS down AND x IS right AND angle IS downleft THEN change IS clockwise;
+RULE 98 : IF y IS down AND x IS right AND angle IS downcenter THEN change IS clockwise;
+RULE 99 : IF y IS down AND x IS right AND angle IS downright THEN change IS clockwise;
+
+RULE 96 : IF y IS down AND x IS right AND angle IS midright THEN change IS anticlockwise;
+RULE 93 : IF y IS down AND x IS right AND angle IS upright THEN change IS anticlockwise;
+RULE 92 : IF y IS down AND x IS right AND angle IS upcenter THEN change IS anticlockwise;
+
+// left 4x
+
+// downleft 7x
+
+
+//	RULE 11 : IF x IS left THEN change IS right;
+//	RULE 12 : IF x IS left AND angle is right THEN change IS keep;
 //	RULE 13 : IF x IS left AND angle is left THEN change IS goright;
 
-	RULE 21 : IF x IS tooright THEN change IS goleft;
-	RULE 22 : IF x IS right AND angle is left THEN change IS keep;
+//	RULE 21 : IF x IS right THEN change IS left;
+//	RULE 22 : IF x IS right AND angle is left THEN change IS keep;
 //	RULE 23 : IF x IS right AND angle is right THEN change IS goleft;
 
-	RULE 31 : IF x IS center AND angle is aligned THEN change IS keep;
-	RULE 32 : IF x IS center AND angle is left THEN change IS goright;
-	RULE 33 : IF x IS center AND angle is right THEN change IS goleft;
+//	RULE 31 : IF x IS center THEN change IS keep;
+//	RULE 32 : IF x IS center AND angle is left THEN change IS goright;
+//	RULE 33 : IF x IS center AND angle is right THEN change IS goleft;
 
 //	RULE 3 : IF x IS centered AND angle IS left THEN change IS goright;
 //	RULE 3 : IF x IS centered AND angle IS right THEN change IS goleft;

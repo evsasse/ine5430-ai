@@ -29,7 +29,7 @@ public class RemoteDriver {
         }
         
         // Prints each graph of the functions in the file
-//        JFuzzyChart.get().chart(fis);
+        JFuzzyChart.get().chart(fis);
         	    	
         Socket kkSocket = null;
         PrintWriter out = null;
@@ -76,7 +76,7 @@ public class RemoteDriver {
         	
         	System.out.println("change: " + respostaDaSuaLogica);
         	
-        	Thread.sleep(1000);
+        	Thread.sleep(100);
 
 //        	double teste = Double.valueOf(stdIn.readLine());
 //        	
