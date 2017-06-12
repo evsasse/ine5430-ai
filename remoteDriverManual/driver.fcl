@@ -14,10 +14,6 @@ FUZZIFY x
 	TERM left := (0, 1) (0.3, 0.1) (0.5, 0);
 	TERM center := (0.25, 0) (0.5, 1) (0.75, 0);
 	TERM right := (0.5, 0) (0.7, 0.1) (1, 1);
-
-//	TERM tooleft := (0, 1) (0.3, 0);
-//	TERM deadcenter := (0.4, 0) (0.5, 1) (0.6, 0);
-//	TERM tooright := (0.7, 0) (1, 1);
 END_FUZZIFY
 
 FUZZIFY y
@@ -42,31 +38,14 @@ FUZZIFY angle
 	TERM upright := (180, 0) (225, 1) (270, 0);
 
 	TERM upcenter := (225, 0) (270, 1) (315, 0);
-
-//	TERM centerleft := (60, 0) (90, 1) (100, 0);
-//	TERM aligned := (75, 0) (90, 1) (105, 0);
-// TERM down := (0, 0) (90, 1) (180, 0);
-//	TERM centerright := (80, 0) (90, 1) (120,0);
-//	TERM right := (90, 0) (180, 1) (270,0);
-//	TERM backwards := (180, 0) (270, 1) (360, 0);
 END_FUZZIFY
 
 DEFUZZIFY change
-// left is anticlockwise
-// right is clockwise
 	TERM clockwise := (-1, 1) (0, 0);
 	TERM strongclockwise := (-1, 1) (-0.1, 1) (0, 0);
 	TERM anticlockwise := (0, 0) (1, 1);
 	TERM stronganticlockwise := (0, 0) (0.1, 1) (1, 1);
-//	TERM left := (-1, 1) (0, 0);
-//	TERM goleft := (-1, 1) (-0.8, 0.3) (0, 0);
-//	TERM right := (0, 0) (1, 1);
-//	TERM goright := (0, 0) (0.8, 0.3) (1, 1);
-//	TERM sharpleft := (-1, 1) (0, 0.3);
-//	TERM smoothleft := (-1, 0.5) (0, 0);
-	TERM keep := (-0.5, 0) (0, 1) (0.5, 0);
-//	TERM smoothright := (0, 0) (1, 0.5);
-//	TERM sharpright := (0, 0.3) (1, 1);
+	TERM keep := (-0.3, 0) (0, 1) (0.3, 0);
 	METHOD : COG;		// Use 'Center Of Gravity' defuzzification method
 	DEFAULT := 0;		// Default value is 0 (if no rule activates defuzzifier)
 END_DEFUZZIFY
@@ -207,28 +186,6 @@ RULE 96 : IF y IS down AND x IS right AND angle IS midright THEN change IS antic
 RULE 93 : IF y IS down AND x IS right AND angle IS upright THEN change IS anticlockwise;
 RULE 92 : IF y IS down AND x IS right AND angle IS upcenter THEN change IS anticlockwise;
 
-// left 4x
-
-// downleft 7x
-
-
-//	RULE 11 : IF x IS left THEN change IS right;
-//	RULE 12 : IF x IS left AND angle is right THEN change IS keep;
-//	RULE 13 : IF x IS left AND angle is left THEN change IS goright;
-
-//	RULE 21 : IF x IS right THEN change IS left;
-//	RULE 22 : IF x IS right AND angle is left THEN change IS keep;
-//	RULE 23 : IF x IS right AND angle is right THEN change IS goleft;
-
-//	RULE 31 : IF x IS center THEN change IS keep;
-//	RULE 32 : IF x IS center AND angle is left THEN change IS goright;
-//	RULE 33 : IF x IS center AND angle is right THEN change IS goleft;
-
-//	RULE 3 : IF x IS centered AND angle IS left THEN change IS goright;
-//	RULE 3 : IF x IS centered AND angle IS right THEN change IS goleft;
-//	RULE 1 : IF service IS poor OR food IS rancid THEN tip IS cheap;
-//	RULE 2 : IF service IS good THEN tip IS average;
-//	RULE 3 : IF service IS excellent AND food IS delicious THEN tip IS generous;
 END_RULEBLOCK
 
 END_FUNCTION_BLOCK

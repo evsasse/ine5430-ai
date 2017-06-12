@@ -29,7 +29,7 @@ public class RemoteDriver {
         }
         
         // Prints each graph of the functions in the file
-        JFuzzyChart.get().chart(fis);
+//        JFuzzyChart.get().chart(fis);
         	    	
         Socket kkSocket = null;
         PrintWriter out = null;
